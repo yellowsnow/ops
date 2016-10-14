@@ -8,6 +8,24 @@
      apt: upgrade=safe
      tags: apt
 
+   - name: Install cowsay
+     apt: pkg=cowsay state=installed
+     when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+     tags: apt
+
+   - name: Install fortune
+     apt: pkg=fortune state=installed
+     when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+     tags: apt
+
+   - name: Install fortunes
+     apt: pkg=fortunes state=installed
+     when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+     tags: apt
+  
+   - name: Cowsay fortune   
+     lineinfile: dest='/home/{{ ansible_ssh_user | default(ansible_env.SUDO_USER, true) | default(ansible_env.USER, true) | default(ansible_user_id) }}/.bashrc' line="fortune -n 160| cowthink" regexp="^fortune" state=present insertafter=EOL create=True owner={{ ansible_ssh_user }}
+
    - name: Install unattended upgrades (Debian/Ubuntu only)
      apt: pkg=unattended-upgrades state=installed
      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
